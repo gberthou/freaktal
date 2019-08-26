@@ -275,8 +275,8 @@ vec4 colorMapping(float n, vec2 z) {
 
 vec3 palette(float normalized) {
     if(normalized < 0.5f)
-        return mix(color3, color1, normalized*2.0);
-    return mix(color1, color2, (normalized-0.5f)*2.0);
+        return mix(color1, color2, normalized*2.0);
+    return mix(color2, color3, (normalized-0.5f)*2.0);
 }
 
 vec4 Mandelbrot(vec2 z) {
@@ -290,8 +290,7 @@ vec4 Mandelbrot(vec2 z) {
         
         if (n >= float(minIterations) && bailoutLimit(z)) {
             //color = colorMapping(n, z);
-            //color = vec4((n/float(maxIterations)) * vec3(1.0, 1.0, 1.0), 1.0);
-            return vec4(palette(n/float(maxIterations)), 1.0);
+            return vec4(palette(1.0-n/float(maxIterations)), 1.0);
             break;
         }
     }
