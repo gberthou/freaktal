@@ -25,7 +25,7 @@ precision mediump float;
 #define dEMandelbrot             // {"label":"Fractal type", "control":"select", "options":["Mandelbrot", "OrbitTrap", "Ducks"]}
 #define dE Mandelbrot             // {"label":"Fractal type", "control":"select", "options":["Mandelbrot", "OrbitTrap", "Ducks"]}
 
-#define maxIterations 50            // {"label":"Iterations", "min":1, "max":400, "step":1, "group_label":"2D parameters"}
+#define maxIterations 100            // {"label":"Iterations", "min":1, "max":400, "step":1, "group_label":"2D parameters"}
 #define antialiasing 0.5            // {"label":"Anti-aliasing", "control":"bool", "default":false, "group_label":"Render quality"}
 
 uniform float scale;                // {"label":"Scale",        "min":-10,  "max":10,   "step":0.1,     "default":2,    "group":"Fractal", "group_label":"Fractal parameters"}
@@ -36,7 +36,6 @@ uniform int   minIterations;        // {"label":"Min. iterations", "min":1, "max
 uniform vec2  offset;               // {"label":["Offset x","Offset y"],  "min":-2,   "max":2,    "step":0.001,    "default":[0.36,0.06],  "group":"Fractal"}
 
 uniform int   colorMode;            // {"label":"Colour mode",  "min":0,  "max":6,   "step":1,     "default":0,    "group":"Colour"}
-uniform int   bailoutStyle;         // {"label":"Colour style", "min":0,  "max":4,   "step":1,     "default":0,    "group":"Colour"}
 uniform float colorScale;           // {"label":"Colour scale",  "min":0,  "max":10,   "step":0.01,     "default":1,    "group":"Colour"}
 uniform float colorCycle;           // {"label":"Colour cycle", "min":0,  "max":10,   "step":0.01,     "default":1,    "group":"Colour"}
 uniform float colorCycleOffset;     // {"label":"Colour cycle offset", "min":-10,  "max":10,   "step":0.01,     "default":0,    "group":"Colour"}
@@ -198,25 +197,7 @@ float log2Bailout = log(2.0 * log(_bailout));
 float logPower = log(abs(power));
 
 bool bailoutLimit(vec2 z) {
-    bool bailing = false;
-    
-    if (bailoutStyle == 3 && (pow(z.x, 2.0) - pow(z.y, 2.0)) >= _bailout) {
-        bailing = true;
-        
-    } else if (bailoutStyle == 4 && (z.y * z.y - z.y * z.x) >= bailout) {
-        bailing = true;
-        
-    } else if (bailoutStyle == 2 && (pow(z.y, 2.0) - pow(z.x, 2.0)) >= _bailout) {
-        bailing = true;
-        
-    } else if (bailoutStyle == 1 && (abs(z.x) > bailout || abs(z.y) > _bailout)) {
-        bailing = true;
-        
-    } else if (dot(z, z) >= _bailout) {
-        bailing = true;
-    }
-    
-    return bailing;
+    return (dot(z, z) >= _bailout);
 }
 
 
@@ -292,6 +273,11 @@ vec4 colorMapping(float n, vec2 z) {
     return vec4(color, 1.0);
 }
 
+vec3 palette(float normalized) {
+    if(normalized < 0.5f)
+        return mix(color3, color1, normalized*2.0);
+    return mix(color1, color2, (normalized-0.5f)*2.0);
+}
 
 vec4 Mandelbrot(vec2 z) {
     vec4  color = vec4(color3, 1.0);
@@ -303,17 +289,15 @@ vec4 Mandelbrot(vec2 z) {
         z = complexPower(z, power) + c;
         
         if (n >= float(minIterations) && bailoutLimit(z)) {
-            color = colorMapping(n, z);
+            //color = colorMapping(n, z);
+            //color = vec4((n/float(maxIterations)) * vec3(1.0, 1.0, 1.0), 1.0);
+            return vec4(palette(n/float(maxIterations)), 1.0);
             break;
         }
     }
     
-    if (iterationColorBlend > 0.0) {
-        float blend = clamp(1.0 - (n / float(maxIterations)) * iterationColorBlend, 0.0, 1.0);
-        color.rgb = mix(color3, color.rgb, blend);
-    }
-    
-    return color;
+    //return color;
+    return vec4(palette(1.0), 1.0);
 }
 
 
@@ -322,7 +306,7 @@ vec4 Mandelbrot(vec2 z) {
 
 
 vec4 render(vec2 pixel) {
-    vec2  z = ((pixel - (size * 0.5)) / size) * vec2(aspectRatio, 1.0) * cameraPosition.z + cameraPosition.xy;
+    vec2 z = ((pixel - (size * 0.5)) / size) * vec2(aspectRatio, 1.0) * cameraPosition.z + cameraPosition.xy;
     z *= rotationMatrix;
     return dE(z);
 }
