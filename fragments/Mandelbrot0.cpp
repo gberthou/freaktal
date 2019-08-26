@@ -9,13 +9,6 @@ Mandelbrot0::Mandelbrot0(size_t width, size_t height):
     p(2.)
 {
     shader.setUniform("minIterations",10);
-    shader.setUniform("colorMode", 0);
-    shader.setUniform("colorScale", 1);
-    shader.setUniform("colorCycle", 1);
-    shader.setUniform("colorCycleOffset", 0);
-    shader.setUniform("colorCycleMirror", true);
-    shader.setUniform("hsv", false);
-    shader.setUniform("iterationColorBlend", .1f);
     shader.setUniform("color1", sf::Vector3f(.7, .7, 1));
     shader.setUniform("color2", sf::Vector3f(1, 0, 1));
     shader.setUniform("color3", sf::Vector3f(0, 0, 0));
