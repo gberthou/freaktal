@@ -1,3 +1,6 @@
+#ifndef MANDELBROT0_HPP
+#define MANDELBROT0_HPP
+
 #include "../FractalContext.hpp"
 
 class Mandelbrot0 : public FractalContext
@@ -16,3 +19,6 @@ class Mandelbrot0 : public FractalContext
         float k;
         float p;
 };
+
+#endif
+

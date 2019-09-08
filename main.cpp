@@ -1,6 +1,9 @@
 #include <SFML/Graphics.hpp>
 
 #include "fragments/Mandelbrot0.hpp"
+#include "fragments/Polar0.hpp"
+
+#define ANIM_TYPE Polar0
 
 const size_t WIDTH = 800;
 const size_t HEIGHT = 600;
@@ -11,7 +14,7 @@ int main()
     window.setVerticalSyncEnabled(true);
     window.setFramerateLimit(60);
 
-    Mandelbrot0 fractal(WIDTH, HEIGHT);
+    ANIM_TYPE anim(WIDTH, HEIGHT);
 
     while (window.isOpen())
     {
@@ -20,10 +23,10 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
 
-        fractal.update(1.f / 60.f);
+        anim.update(1.f / 60.f);
 
         window.clear();
-        window.draw(fractal);
+        window.draw(anim);
         window.display();
     }
     return EXIT_SUCCESS;
