@@ -1,3 +1,6 @@
+#ifndef FRACTAL_CONTEXT_HPP
+#define FRACTAL_CONTEXT_HPP
+
 #include <string>
 
 #include <SFML/Graphics.hpp>
@@ -20,4 +23,6 @@ class FractalContext : public sf::Sprite
         size_t height;
         double t;
 };
+
+#endif
 

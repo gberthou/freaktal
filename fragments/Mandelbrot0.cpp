@@ -36,7 +36,7 @@ void Mandelbrot0::update(double delta_t)
     shader.setUniform("power", p);
 }
 
-void Mandelbrot0::setPosition(const sf::Vector3f &position)
+void Mandelbrot0::setCameraPosition(const sf::Vector3f &position)
 {
     shader.setUniform("cameraPosition", position);
 }

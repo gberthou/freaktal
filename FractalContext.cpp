@@ -17,7 +17,9 @@ FractalContext::FractalContext(size_t width, size_t height, std::string fragment
 
 void FractalContext::draw(sf::RenderTarget &target, sf::RenderStates) const
 {
-    target.draw(sprite, &shader);
+    sf::RenderStates states(getTransform());
+    states.shader = &shader;
+    target.draw(sprite, states);
 }
 
 void FractalContext::update(double delta_t)

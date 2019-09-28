@@ -6,7 +6,7 @@ class Mandelbrot0 : public FractalContext
         Mandelbrot0(size_t width, size_t height);
         virtual void update(double delta_t);
 
-        void setPosition(const sf::Vector3f &position);
+        void setCameraPosition(const sf::Vector3f &position);
         void setSize(const sf::Vector2f &size);
         void setBailout(float bailout);
         void setPower(float power);
