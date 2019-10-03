@@ -9,9 +9,9 @@ INCDIR=
 CFLAGS=-std=c++11 -Wall -Wextra -Werror -pedantic -O2 -g
 
 DEFINES=
-LIBS=-lsfml-graphics -lsfml-window -lsfml-system -lsfml-network
+LIBS=-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
-CPPFILES=$(wildcard *.cpp) $(wildcard fragments/*.cpp)
+CPPFILES=$(wildcard *.cpp) $(wildcard fragments/*.cpp) $(wildcard utils/*.cpp)
 
 
 OBJS=$(patsubst %.cpp,$(OBJDIR)/%.o,$(CPPFILES))
@@ -25,7 +25,7 @@ $(BIN): $(OBJS)
 	$(GPP) $(OBJS) -o $(BIN) $(LIBDIR) $(LIBS)
 
 build:
-	mkdir -p $(OBJDIR) $(OBJDIR)/fragments
+	mkdir -p $(OBJDIR) $(OBJDIR)/fragments $(OBJDIR)/utils
 
 clean:
 	rm -f $(BIN) $(OBJS)

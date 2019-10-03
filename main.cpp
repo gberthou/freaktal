@@ -1,7 +1,10 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 #include "fragments/Mandelbrot0.hpp"
 #include "ParticleSet.hpp"
+
+#include "utils/FFTSoundStream.hpp"
 
 const size_t WIDTH = 800;
 const size_t HEIGHT = 600;
@@ -17,6 +20,12 @@ int main()
     Mandelbrot0 particle0(WIDTH/2, HEIGHT/2);
     ParticleSet particles;
     particles.add(&particle0);
+
+    sf::SoundBuffer buffer;
+    buffer.loadFromFile("le-perv.flac");
+
+    FFTSoundStream stream(buffer);
+    stream.play();
 
     float x = 0.f;
 
