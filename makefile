@@ -9,7 +9,7 @@ INCDIR=
 CFLAGS=-std=c++11 -Wall -Wextra -Werror -pedantic -O2 -g
 
 DEFINES=
-LIBS=-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+LIBS=-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lfftw3
 
 CPPFILES=$(wildcard *.cpp) $(wildcard fragments/*.cpp) $(wildcard utils/*.cpp)
 
