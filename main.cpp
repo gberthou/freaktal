@@ -1,3 +1,6 @@
+#include <iostream>
+
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
@@ -5,10 +8,41 @@
 #include "ParticleSet.hpp"
 
 #include "utils/FFTSoundStream.hpp"
+#include "utils/FFTNotifier.hpp"
 
 const size_t WIDTH = 800;
 const size_t HEIGHT = 600;
 const double DT = 1.f / 60.f;
+
+class MyNotifier : public FFTNotifier
+{
+    public:
+        MyNotifier(Mandelbrot0 &fractal):
+            mb(fractal),
+            formerSum(0.)
+        {
+        }
+
+        virtual void notify(const double *fftout, size_t size)
+        {
+            const size_t N_BASS_SAMPLES = 2;
+            double sum = 0.;
+
+            for(size_t i = 0; i < N_BASS_SAMPLES && i < size; ++i)
+                sum += *fftout++;
+            sum /= N_BASS_SAMPLES;
+
+            double d = sum - formerSum;
+            if(d > 100)
+                std::cout << d << std::endl;
+
+            formerSum = sum;
+        }
+
+    protected:
+        Mandelbrot0 &mb;
+        double formerSum;
+};
 
 int main()
 {
@@ -24,7 +58,8 @@ int main()
     sf::SoundBuffer buffer;
     buffer.loadFromFile("le-perv.flac");
 
-    FFTSoundStream stream(buffer);
+    MyNotifier notifier(fractal);
+    FFTSoundStream stream(buffer, notifier);
     stream.play();
 
     float x = 0.f;

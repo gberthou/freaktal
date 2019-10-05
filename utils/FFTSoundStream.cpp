@@ -1,10 +1,8 @@
-#include <iostream>
-
 #include "FFTSoundStream.hpp"
 
 const float CHUNK_DURATION_S = 20.0e-3; // 20 ms
 
-FFTSoundStream::FFTSoundStream(const sf::SoundBuffer &buffer):
+FFTSoundStream::FFTSoundStream(const sf::SoundBuffer &buffer, FFTNotifier &notifier):
     buffer(buffer),
     currentSample(0),
     chunkSize(CHUNK_DURATION_S * buffer.getSampleRate() * buffer.getChannelCount()),
@@ -12,7 +10,9 @@ FFTSoundStream::FFTSoundStream(const sf::SoundBuffer &buffer):
     fftSize(CHUNK_DURATION_S * buffer.getSampleRate()),
     tin(new double[fftSize]),
     tout(new double[fftSize]),
-    fftplan(fftw_plan_r2r_1d(fftSize, tin, tout, FFTW_R2HC, FFTW_ESTIMATE))
+    fftplan(fftw_plan_r2r_1d(fftSize, tin, tout, FFTW_R2HC, FFTW_ESTIMATE)),
+
+    notifier(notifier)
 {
     // Initialize base class
     initialize(buffer.getChannelCount(), buffer.getSampleRate());
@@ -43,9 +43,7 @@ bool FFTSoundStream::onGetData(sf::SoundStream::Chunk &data)
         tin[i] = static_cast<double>(data.samples[j]) / 65536.0;
     fftw_execute(fftplan);
 
-    for(size_t i = 0; i < fftSize; ++i)
-        std::cout << tout[i] << ", ";
-    std::cout << std::endl << std::endl;
+    notifier.notify(tout, fftSize);
 
     return true;
 }

@@ -4,10 +4,12 @@
 #include <SFML/Audio.hpp>
 #include <fftw3.h>
 
+#include "FFTNotifier.hpp"
+
 class FFTSoundStream : public sf::SoundStream
 {
     public:
-        FFTSoundStream(const sf::SoundBuffer &buffer);
+        FFTSoundStream(const sf::SoundBuffer &buffer, FFTNotifier &notifier);
         ~FFTSoundStream();
 
         virtual bool onGetData(sf::SoundStream::Chunk &data);
@@ -22,6 +24,8 @@ class FFTSoundStream : public sf::SoundStream
         double *tin;
         double *tout;
         fftw_plan fftplan;
+
+        FFTNotifier &notifier;
 };
 
 #endif
